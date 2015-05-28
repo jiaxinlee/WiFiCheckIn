@@ -1,6 +1,12 @@
 
 package com.whitebyte.hotspotcontrolexample;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -30,18 +36,57 @@ public class Main extends Activity {
 	}
 
 	private void scan() {
+		String usrIpAddr;
+		String usrDevice;
+		String usrHWAddr;
+		String usrName = new String("Nobody");
 		ArrayList<ClientScanResult> clients = wifiApManager.getClientList(false);
 
 		textView1.setText("WifiApState: " + wifiApManager.getWifiApState() + "\n\n");
 
 		textView1.append("Clients: \n");
 		for (ClientScanResult clientScanResult : clients) {
+			usrIpAddr = clientScanResult.getIpAddr();
+			usrDevice = clientScanResult.getDevice();
+			usrHWAddr = clientScanResult.getHWAddr();
+
+			File fin = new File("UsrInfo.txt");
+			FileInputStream fis = null;
+			try {
+				fis = new FileInputStream(fin);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			//Construct BufferedReader from InputStreamReader
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+			String line = null;
+			try {
+				while ((line = br.readLine()) != null) {
+					if (line.equals(usrHWAddr)){
+						usrName = br.readLine();
+						break;
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
 			textView1.append("####################\n");
-			textView1.append("IpAddr: " + clientScanResult.getIpAddr() + "\n");
-			textView1.append("Device: " + clientScanResult.getDevice() + "\n");
-			textView1.append("HWAddr: " + clientScanResult.getHWAddr() + "\n");
+			textView1.append("IpAddr: " + usrIpAddr + "\n");
+			textView1.append("Device: " + usrDevice + "\n");
+			textView1.append("HWAddr: " + usrHWAddr + "\n");
+			textView1.append("UsrName: " + usrName + "\n");
 			
 		}
+
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
