@@ -37,6 +37,15 @@ public class Main extends Activity {
 	private Timer mTimer;
 	private TimerTask mTimerTask;
 	private Handler mHandler;
+	
+	private class StuInfo{
+		String sName;
+		String sAddr;
+		StuInfo(String s, String t){
+			sName = s;
+			sAddr = t;
+		}
+	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -47,7 +56,14 @@ public class Main extends Activity {
 		textView1 = (TextView) findViewById(R.id.textView1);
 		wifiApManager = new WifiApManager(this);
 		
-		init_stu();
+		List<StuInfo> stu = new ArrayList<StuInfo>();
+
+		StuInfo jx = new StuInfo("Jiaxin Lee","28:e1:4c:7c:35:a7");
+		stu.add(jx);
+		StuInfo xy = new StuInfo("Xiaoyang Wang", "68:96:7b:ed:a2:20");
+		stu.add(xy);
+		
+		init_stu(stu);
 		
 		scan();
 		
@@ -77,19 +93,16 @@ public class Main extends Activity {
 		mTimer.schedule(mTimerTask, 10000, 1000);
 	}
 	
-	public void init_stu(){
-		String jx = "Jiaxin Lee";
-		String sjx = "28:e1:4c:7c:35:a7";
-		String xy = "Xiaoyang Wang";
-		String sxy = "68:96:7b:ed:a2:20";
+	public void init_stu(List<StuInfo> stu){
 		String fileName = "myfile.txt";
 		String fileTime = "myTime.txt";
 		FileOutputStream outputStream;
 		deleteFile(fileName);
 		try {
 			  outputStream = openFileOutput(fileName, Context.MODE_APPEND);
-			  outputStream.write((sjx+";"+jx+"\n").getBytes());
-			  outputStream.write((sxy+";"+xy+"\n").getBytes());
+			  for (StuInfo ss : stu){
+				  outputStream.write((ss.sAddr+";"+ss.sName+"\n").getBytes());
+			  }
 			  outputStream.close();
 			} catch (Exception e) {
 			  textView1.append("haha\n");
@@ -98,8 +111,9 @@ public class Main extends Activity {
 		deleteFile(fileTime);
 		try {
 			  outputStream = openFileOutput(fileTime, Context.MODE_APPEND);
-			  outputStream.write((sjx+";null;null\n").getBytes());
-			  outputStream.write((sxy+";null;null\n").getBytes());
+			  for (StuInfo ss : stu){
+				  outputStream.write((ss.sAddr+";null;null\n").getBytes());
+			  }
 			  outputStream.close();
 			} catch (Exception e) {
 			  textView1.append("haha\n");
