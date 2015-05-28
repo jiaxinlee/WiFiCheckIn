@@ -10,7 +10,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -76,17 +79,28 @@ public class Main extends Activity {
 		String usrIpAddr;
 		String usrHWAddr;
 		String usrName;
+		String comeTime;
+		String leaveTime;
 		ArrayList<ClientScanResult> clients = wifiApManager.getClientList(false);
 
 		textView1.setText("WifiApState: " + wifiApManager.getWifiApState() + "\n\n");
 
 		textView1.append("Clients: \n");
 		String filename = "myfile.txt";
+		String fileTime = "myTime.txt";
 //		String string = "28:e1:4c:7c:35:a7;Jiaxin Lee";
+		String string = "28:e1:4c:7c:35:a7;null;null";
 		String line = null;
+		String line1 = null;
 		String[] parts = null;
-//		FileOutputStream outputStream;
+		String[] parts1 = null;
+		FileOutputStream outputStream;
 		FileInputStream inStream;
+		FileInputStream tmStream;
+		SimpleDateFormat formatter = new SimpleDateFormat ("yyyy/MM/dd HH:mm:ss");     
+		Date curDate = new Date(System.currentTimeMillis());
+		String tm = formatter.format(curDate);
+		List<String> lst = new ArrayList<String>();
 
 /*		try {
 		  outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
@@ -101,12 +115,17 @@ public class Main extends Activity {
 			inStream = openFileInput(filename);
 			DataInputStream in = new DataInputStream(inStream);
 		    BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			tmStream = openFileInput(fileTime);
+			DataInputStream in1 = new DataInputStream(tmStream);
+		    BufferedReader br1 = new BufferedReader(new InputStreamReader(in1));
 		    try {
 				while ((line = br.readLine()) != null) {
 					parts = line.split(";");
 					usrIpAddr = "OffLine";
 					usrName = parts[1];
 					usrHWAddr = parts[0];
+					comeTime = "null";
+					leaveTime = "null";
 					for (ClientScanResult clientScanResult : clients) {
 						if (usrHWAddr.equals(clientScanResult.getHWAddr())){
 							usrIpAddr = clientScanResult.getIpAddr();
@@ -117,12 +136,45 @@ public class Main extends Activity {
 					textView1.append("UsrName: " + usrName + "\n");
 					textView1.append("IpAddr: " + usrIpAddr + "\n");
 					textView1.append("HWAddr: " + usrHWAddr + "\n");
+					while ((line1 = br1.readLine()) != null) {
+						parts1 = line1.split(";");
+						if (usrHWAddr.equals(parts1[0])){
+							comeTime = parts1[1];
+							leaveTime = parts1[2];
+							break;
+						}
+					}
+					//textView1.append(line1+"\n");
+					if(comeTime.equals("null") && !usrIpAddr.equals("OffLine")){
+						comeTime = tm;
+					}
+					if(!comeTime.equals("null") && leaveTime.equals("null") && usrIpAddr.equals("OffLine")){
+						leaveTime = tm;
+					}
+					if(!leaveTime.equals("null") && !usrIpAddr.equals("OffLine")){
+						comeTime = tm;
+						leaveTime = "null";
+					}
+					textView1.append("Come: " + comeTime + "\n");
+					textView1.append("Leave: " + leaveTime + "\n");
+					lst.add(usrHWAddr+";"+comeTime+";"+leaveTime+"\n");
 				}
 			} catch (IOException e) {
 			// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-				
+		deleteFile(fileTime);
+		try {
+		  outputStream = openFileOutput(fileTime, Context.MODE_APPEND);
+		  for (String ss:lst){
+			  outputStream.write(ss.getBytes());
+		  }
+		  outputStream.close();
+		} catch (Exception e) {
+		  textView1.append("haha\n");
+		  e.printStackTrace();
+		}
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
