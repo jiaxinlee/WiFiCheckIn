@@ -3,12 +3,10 @@ package com.whitebyte.hotspotcontrolexample;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -129,9 +127,9 @@ public class Main extends Activity {
 		String leaveTime;
 		ArrayList<ClientScanResult> clients = wifiApManager.getClientList(false);
 
-		textView1.setText("WifiApState: " + wifiApManager.getWifiApState() + "\n\n");
+		textView1.setText("签到详情  \n\n");
 
-		textView1.append("Clients: \n");
+		textView1.append("学生: \n");
 		String fileName = "myfile.txt";
 		String fileTime = "myTime.txt";
 		String line = null;
@@ -177,9 +175,9 @@ public class Main extends Activity {
 						}
 					}
 					textView1.append("####################\n");
-					textView1.append("UsrName: " + usrName + "\n");
-					textView1.append("IpAddr: " + usrIpAddr + "\n");
-					textView1.append("HWAddr: " + usrHWAddr + "\n");
+					textView1.append("姓名: " + usrName + "\n");
+					textView1.append("IP: " + usrIpAddr + "\n");
+					textView1.append("MAC: " + usrHWAddr + "\n");
 					while ((line1 = br1.readLine()) != null) {
 						parts1 = line1.split(";");
 						if (usrHWAddr.equals(parts1[0])){
@@ -199,14 +197,16 @@ public class Main extends Activity {
 						comeTime = tm;
 						leaveTime = "null";
 					}
-					textView1.append("Come: " + comeTime + "\n");
-					textView1.append("Leave: " + leaveTime + "\n");
+					textView1.append("到达: " + comeTime + "\n");
+					textView1.append("离开: " + leaveTime + "\n");
 					lst.add(usrHWAddr+";"+comeTime+";"+leaveTime+"\n");
 				}
 			} catch (IOException e) {
 			// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
+			textView1.append("\n");
 		deleteFile(fileTime);
 		try {
 		  outputStream = openFileOutput(fileTime, Context.MODE_APPEND);

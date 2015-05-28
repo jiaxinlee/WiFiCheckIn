@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-    <TextView android:text="TextView" android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+<LinearLayout
+            android:id="@+id/top_navigation_layout_wt_main"
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:background="@drawable/bg_top_navigation_bar"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+            
+        <TextView
+                style="@style/textview_large"
+                  
+                android:layout_weight="1.0"
+                android:text="点名系统" />
 </LinearLayout>
+
+<ScrollView
+    android:id="@+id/SCROLLER_ID"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="vertical"
+    android:layout_below="@+id/top_navigation_layout_wt_main"
+    android:fillViewport="true">
+
+    <TextView android:text="TextView"
+          android:maxLines = "4096"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="54dp"
+          android:textSize="20sp"
+          android:id="@+id/textView1"></TextView>
+</ScrollView>
+
+</RelativeLayout>
