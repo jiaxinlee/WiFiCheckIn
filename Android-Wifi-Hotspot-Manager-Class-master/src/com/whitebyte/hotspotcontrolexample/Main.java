@@ -47,6 +47,8 @@ public class Main extends Activity {
 		textView1 = (TextView) findViewById(R.id.textView1);
 		wifiApManager = new WifiApManager(this);
 		
+		init_stu();
+		
 		scan();
 		
 		mTimer = new Timer();
@@ -74,6 +76,36 @@ public class Main extends Activity {
 		
 		mTimer.schedule(mTimerTask, 10000, 1000);
 	}
+	
+	public void init_stu(){
+		String jx = "Jiaxin Lee";
+		String sjx = "28:e1:4c:7c:35:a7";
+		String xy = "Xiaoyang Wang";
+		String sxy = "68:96:7b:ed:a2:20";
+		String fileName = "myfile.txt";
+		String fileTime = "myTime.txt";
+		FileOutputStream outputStream;
+		deleteFile(fileName);
+		try {
+			  outputStream = openFileOutput(fileName, Context.MODE_APPEND);
+			  outputStream.write((sjx+";"+jx+"\n").getBytes());
+			  outputStream.write((sxy+";"+xy+"\n").getBytes());
+			  outputStream.close();
+			} catch (Exception e) {
+			  textView1.append("haha\n");
+			  e.printStackTrace();
+			}
+		deleteFile(fileTime);
+		try {
+			  outputStream = openFileOutput(fileTime, Context.MODE_APPEND);
+			  outputStream.write((sjx+";null;null\n").getBytes());
+			  outputStream.write((sxy+";null;null\n").getBytes());
+			  outputStream.close();
+			} catch (Exception e) {
+			  textView1.append("haha\n");
+			  e.printStackTrace();
+			}
+	}
 
 	private void scan() {
 		String usrIpAddr;
@@ -86,10 +118,8 @@ public class Main extends Activity {
 		textView1.setText("WifiApState: " + wifiApManager.getWifiApState() + "\n\n");
 
 		textView1.append("Clients: \n");
-		String filename = "myfile.txt";
+		String fileName = "myfile.txt";
 		String fileTime = "myTime.txt";
-//		String string = "28:e1:4c:7c:35:a7;Jiaxin Lee";
-		String string = "28:e1:4c:7c:35:a7;null;null";
 		String line = null;
 		String line1 = null;
 		String[] parts = null;
@@ -112,7 +142,7 @@ public class Main extends Activity {
 		}
 */
 		try {
-			inStream = openFileInput(filename);
+			inStream = openFileInput(fileName);
 			DataInputStream in = new DataInputStream(inStream);
 		    BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			tmStream = openFileInput(fileTime);
