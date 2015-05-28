@@ -74,7 +74,6 @@ public class Main extends Activity {
 
 	private void scan() {
 		String usrIpAddr;
-		String usrDevice;
 		String usrHWAddr;
 		String usrName;
 		ArrayList<ClientScanResult> clients = wifiApManager.getClientList(false);
@@ -82,56 +81,51 @@ public class Main extends Activity {
 		textView1.setText("WifiApState: " + wifiApManager.getWifiApState() + "\n\n");
 
 		textView1.append("Clients: \n");
-		for (ClientScanResult clientScanResult : clients) {
-			usrIpAddr = clientScanResult.getIpAddr();
-			usrDevice = clientScanResult.getDevice();
-			usrHWAddr = clientScanResult.getHWAddr();
-			usrName = "Nobody";
+		String filename = "myfile.txt";
+//		String string = "28:e1:4c:7c:35:a7;Jiaxin Lee";
+		String line = null;
+		String[] parts = null;
+//		FileOutputStream outputStream;
+		FileInputStream inStream;
 
-			String filename = "myfile.txt";
-//			String string = "28:e1:4c:7c:35:a7;Jiaxin Lee";
-			String line = null;
-			String[] parts = null;
-//			FileOutputStream outputStream;
-			FileInputStream inStream;
-
-/*			try {
-			  outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-			  outputStream.write(string.getBytes());
-			  outputStream.close();
-			} catch (Exception e) {
-			  textView1.append("haha\n");
-			  e.printStackTrace();
-			}
+/*		try {
+		  outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+		  outputStream.write(string.getBytes());
+		  outputStream.close();
+		} catch (Exception e) {
+		  textView1.append("haha\n");
+		  e.printStackTrace();
+		}
 */
-			try {
-				inStream = openFileInput(filename);
-				DataInputStream in = new DataInputStream(inStream);
-		        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		        try {
-					while ((line = br.readLine()) != null) {
-						parts = line.split(";");
-						if (parts[0].equals(usrHWAddr)){
-							usrName = parts[1];
+		try {
+			inStream = openFileInput(filename);
+			DataInputStream in = new DataInputStream(inStream);
+		    BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		    try {
+				while ((line = br.readLine()) != null) {
+					parts = line.split(";");
+					usrIpAddr = "OffLine";
+					usrName = parts[1];
+					usrHWAddr = parts[0];
+					for (ClientScanResult clientScanResult : clients) {
+						if (usrHWAddr.equals(clientScanResult.getHWAddr())){
+							usrIpAddr = clientScanResult.getIpAddr();
 							break;
 						}
 					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					  textView1.append("why\n");
-					e.printStackTrace();
+					textView1.append("####################\n");
+					textView1.append("UsrName: " + usrName + "\n");
+					textView1.append("IpAddr: " + usrIpAddr + "\n");
+					textView1.append("HWAddr: " + usrHWAddr + "\n");
 				}
-				
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				textView1.append("heh\n");
+			} catch (IOException e) {
+			// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			textView1.append("####################\n");
-			textView1.append("IpAddr: " + usrIpAddr + "\n");
-			textView1.append("Device: " + usrDevice + "\n");
-			textView1.append("HWAddr: " + usrHWAddr + "\n");
-			textView1.append("UsrName: " + usrName + "\n");
+				
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
