@@ -2,14 +2,18 @@
 package com.whitebyte.hotspotcontrolexample;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,35 +54,46 @@ public class Main extends Activity {
 			usrDevice = clientScanResult.getDevice();
 			usrHWAddr = clientScanResult.getHWAddr();
 
-			File fin = new File("UsrInfo.txt");
-			FileInputStream fis = null;
-			try {
-				fis = new FileInputStream(fin);
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			//Construct BufferedReader from InputStreamReader
-			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+			String filename = "myfile.txt";
+//			String string = "28:e1:4c:7c:35:a7;Jiaxin Lee";
 			String line = null;
+			String[] parts = null;
+//			FileOutputStream outputStream;
+			FileInputStream inStream;
+
+/*			try {
+			  outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+			  outputStream.write(string.getBytes());
+			  outputStream.close();
+			} catch (Exception e) {
+			  textView1.append("haha\n");
+			  e.printStackTrace();
+			}
+*/
 			try {
-				while ((line = br.readLine()) != null) {
-					if (line.equals(usrHWAddr)){
-						usrName = br.readLine();
-						break;
+				inStream = openFileInput(filename);
+				DataInputStream in = new DataInputStream(inStream);
+		        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		        try {
+					while ((line = br.readLine()) != null) {
+						parts = line.split(";");
+						if (parts[0].equals(usrHWAddr)){
+							usrName = parts[1];
+							break;
+						}
+						textView1.append(line+"\n");
 					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					  textView1.append("why\n");
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
+				
+			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
+				textView1.append("heh\n");
 				e.printStackTrace();
 			}
-			try {
-				br.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	
 			textView1.append("####################\n");
 			textView1.append("IpAddr: " + usrIpAddr + "\n");
 			textView1.append("Device: " + usrDevice + "\n");
