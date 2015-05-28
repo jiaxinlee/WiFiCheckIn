@@ -111,7 +111,7 @@ public class WifiApManager {
      * @return ArrayList of {@link ClientScanResult}
      */
     public ArrayList<ClientScanResult> getClientList(boolean onlyReachables) {
-    	return getClientList(onlyReachables, 300);
+    	return getClientList(onlyReachables, 1000);
     }
     
 	/**
@@ -138,7 +138,7 @@ public class WifiApManager {
 					if (mac.matches("..:..:..:..:..:..")) {
 						boolean isReachable = InetAddress.getByName(splitted[0]).isReachable(reachableTimeout);
 
-						if (!onlyReachables || isReachable) {
+						if (!onlyReachables && isReachable) {
 							result.add(new ClientScanResult(splitted[0], splitted[3], splitted[5], isReachable));
 						}
 					}

@@ -11,10 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -26,6 +30,10 @@ import com.whitebyte.wifihotspotutils.WifiApManager;
 public class Main extends Activity {
 	TextView textView1;
 	WifiApManager wifiApManager;
+	
+	private Timer mTimer;
+	private TimerTask mTimerTask;
+	private Handler mHandler;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -37,13 +45,38 @@ public class Main extends Activity {
 		wifiApManager = new WifiApManager(this);
 		
 		scan();
+		
+		mTimer = new Timer();
+
+		mTimer = new Timer();
+
+		mHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what){
+				case 0:
+					textView1.setText("");
+					scan();
+				break;
+				}
+			}
+		};
+		
+		mTimerTask = new TimerTask() {
+			@Override
+			public void run() {
+				mHandler.sendEmptyMessage(0);
+			}
+		};
+		
+		mTimer.schedule(mTimerTask, 10000, 1000);
 	}
 
 	private void scan() {
 		String usrIpAddr;
 		String usrDevice;
 		String usrHWAddr;
-		String usrName = new String("Nobody");
+		String usrName;
 		ArrayList<ClientScanResult> clients = wifiApManager.getClientList(false);
 
 		textView1.setText("WifiApState: " + wifiApManager.getWifiApState() + "\n\n");
@@ -53,6 +86,7 @@ public class Main extends Activity {
 			usrIpAddr = clientScanResult.getIpAddr();
 			usrDevice = clientScanResult.getDevice();
 			usrHWAddr = clientScanResult.getHWAddr();
+			usrName = "Nobody";
 
 			String filename = "myfile.txt";
 //			String string = "28:e1:4c:7c:35:a7;Jiaxin Lee";
@@ -81,7 +115,6 @@ public class Main extends Activity {
 							usrName = parts[1];
 							break;
 						}
-						textView1.append(line+"\n");
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -99,7 +132,6 @@ public class Main extends Activity {
 			textView1.append("Device: " + usrDevice + "\n");
 			textView1.append("HWAddr: " + usrHWAddr + "\n");
 			textView1.append("UsrName: " + usrName + "\n");
-			
 		}
 
 	}
