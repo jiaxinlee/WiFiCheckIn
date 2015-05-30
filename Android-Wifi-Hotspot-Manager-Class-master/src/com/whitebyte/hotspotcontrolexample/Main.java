@@ -26,14 +26,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.whitebyte.hotspotclients.R;
 import com.whitebyte.wifihotspotutils.ClientScanResult;
 import com.whitebyte.wifihotspotutils.WifiApManager;
 
 public class Main extends Activity {
-	TextView textView1;
 	WifiApManager wifiApManager;
 	
 	private Timer mTimer;
@@ -41,15 +39,21 @@ public class Main extends Activity {
 	private Handler mHandler;
 	private SimpleAdapter sca;
 	private int[] photoId = {R.drawable.jx, R.drawable.xy};
+	private ArrayList<Map<String, Object>> stuList = new ArrayList<Map<String, Object>>();
 	
 	private class StuInfo{
 		String sName;
 		String sAddr;
-		StuInfo(String s, String t){
+		String sArrive;
+		String sLeave;
+		StuInfo(String s, String t, String u, String v){
 			sName = s;
 			sAddr = t;
+			sArrive = u;
+			sLeave = v;
 		}
 	}
+
 
 	/** Called when the activity is first created. */
 	@Override
@@ -59,25 +63,25 @@ public class Main extends Activity {
 				
 		List<StuInfo> stu = new ArrayList<StuInfo>();
 
-		StuInfo jx = new StuInfo("Jiaxin Lee","28:e1:4c:7c:35:a7");
+		StuInfo jx = new StuInfo("Jiaxin Lee","28:e1:4c:7c:35:a7","null","null");
 		stu.add(jx);
-		StuInfo xy = new StuInfo("Xiaoyang Wang", "68:96:7b:ed:a2:20");
+		StuInfo xy = new StuInfo("Xiaoyang Wang", "68:96:7b:ed:a2:20","null","null");
 		stu.add(xy);
 		
 		init_stu(stu);
+		getListForSimpleAdapter(stu);
 
 		GridView gv = (GridView)this.findViewById(R.id.StuList);
 		
 		sca = new SimpleAdapter(
 				this,
-				getListForSimpleAdapter(stu),
+				stuList,
 				R.layout.item,
 				new String[]{"col1", "col2", "col3"},
 				new int[]{R.id.photo, R.id.namae, R.id.taimu}
 				);
 		gv.setAdapter(sca);
 		
-		textView1 = (TextView) findViewById(R.id.textView1);
 		wifiApManager = new WifiApManager(this);
 		
 		scan();
@@ -89,9 +93,8 @@ public class Main extends Activity {
 		public void handleMessage(Message msg) {
 			switch (msg.what){
 				case 0:
-					textView1.setText("");
-					sca.notifyDataSetChanged();
 					scan();
+					sca.notifyDataSetChanged();
 				break;
 				}
 			}
@@ -104,21 +107,20 @@ public class Main extends Activity {
 			}
 		};
 		
-		mTimer.schedule(mTimerTask, 10000, 1000);
+		mTimer.schedule(mTimerTask, 1000, 1000);
 	}
-	
-	private List<Map<String, Object>> getListForSimpleAdapter(List<StuInfo> stu){
-		ArrayList<Map<String, Object>> stuList = new ArrayList<Map<String, Object>>();
+
+	private void getListForSimpleAdapter(List<StuInfo> stu){
+		stuList.clear();
 		int i = 0;
 		for (StuInfo ss : stu){
 			HashMap<String, Object> hmap = new HashMap<String, Object>();
 			hmap.put("col1", photoId[i]);
 			hmap.put("col2", ss.sName);
-			hmap.put("col3", "null\nnull");
+			hmap.put("col3", "鍒拌揪锛歕n"+ss.sArrive+"\n绂诲紑锛歕n"+ss.sLeave);
 			i++;
 			stuList.add(hmap);
 		}
-		return stuList;
 	}
 	
 	public void init_stu(List<StuInfo> stu){
@@ -133,7 +135,6 @@ public class Main extends Activity {
 			  }
 			  outputStream.close();
 			} catch (Exception e) {
-			  textView1.append("haha\n");
 			  e.printStackTrace();
 			}
 		deleteFile(fileTime);
@@ -155,10 +156,9 @@ public class Main extends Activity {
 		String comeTime;
 		String leaveTime;
 		ArrayList<ClientScanResult> clients = wifiApManager.getClientList(false);
+		
+		List<StuInfo> stu = new ArrayList<StuInfo>();
 
-		textView1.setText("签到详情  \n\n");
-
-		textView1.append("学生: \n");
 		String fileName = "myfile.txt";
 		String fileTime = "myTime.txt";
 		String line = null;
@@ -173,15 +173,6 @@ public class Main extends Activity {
 		String tm = formatter.format(curDate);
 		List<String> lst = new ArrayList<String>();
 
-/*		try {
-		  outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-		  outputStream.write(string.getBytes());
-		  outputStream.close();
-		} catch (Exception e) {
-		  textView1.append("haha\n");
-		  e.printStackTrace();
-		}
-*/
 		try {
 			inStream = openFileInput(fileName);
 			DataInputStream in = new DataInputStream(inStream);
@@ -203,10 +194,6 @@ public class Main extends Activity {
 							break;
 						}
 					}
-					textView1.append("####################\n");
-					textView1.append("姓名: " + usrName + "\n");
-					textView1.append("IP: " + usrIpAddr + "\n");
-					textView1.append("MAC: " + usrHWAddr + "\n");
 					while ((line1 = br1.readLine()) != null) {
 						parts1 = line1.split(";");
 						if (usrHWAddr.equals(parts1[0])){
@@ -215,7 +202,6 @@ public class Main extends Activity {
 							break;
 						}
 					}
-					//textView1.append(line1+"\n");
 					if(comeTime.equals("null") && !usrIpAddr.equals("OffLine")){
 						comeTime = tm;
 					}
@@ -226,16 +212,16 @@ public class Main extends Activity {
 						comeTime = tm;
 						leaveTime = "null";
 					}
-					textView1.append("到达: " + comeTime + "\n");
-					textView1.append("离开: " + leaveTime + "\n");
 					lst.add(usrHWAddr+";"+comeTime+";"+leaveTime+"\n");
+					StuInfo si = new StuInfo(usrName,usrHWAddr,comeTime,leaveTime);
+					stu.add(si);
 				}
 			} catch (IOException e) {
 			// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+		}
+		getListForSimpleAdapter(stu);
 
-			textView1.append("\n");
 		deleteFile(fileTime);
 		try {
 		  outputStream = openFileOutput(fileTime, Context.MODE_APPEND);
@@ -244,7 +230,6 @@ public class Main extends Activity {
 		  }
 		  outputStream.close();
 		} catch (Exception e) {
-		  textView1.append("haha\n");
 		  e.printStackTrace();
 		}
 
