@@ -9,4 +9,6 @@ With this class you can enable the check the current Status of the Hotspot, enab
 http://www.whitebyte.info/android/android-wifi-hotspot-manager-class
 
 ##License
-This project is open source and free, it is available under the [Apache v2 License](http://www.apache.org/licenses/LICENSE-2.0.html).
+This project is open source and free, it is available under the [Apache v2 License](http://www.apache.org/licenses/LICENSE-2.0.html)
+
+hehe.
