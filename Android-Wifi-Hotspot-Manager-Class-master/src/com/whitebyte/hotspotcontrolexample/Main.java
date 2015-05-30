@@ -11,7 +11,9 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,6 +24,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.whitebyte.hotspotclients.R;
@@ -35,6 +39,8 @@ public class Main extends Activity {
 	private Timer mTimer;
 	private TimerTask mTimerTask;
 	private Handler mHandler;
+	private SimpleAdapter sca;
+	private int[] photoId = {R.drawable.jx, R.drawable.xy};
 	
 	private class StuInfo{
 		String sName;
@@ -50,10 +56,7 @@ public class Main extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
-		textView1 = (TextView) findViewById(R.id.textView1);
-		wifiApManager = new WifiApManager(this);
-		
+				
 		List<StuInfo> stu = new ArrayList<StuInfo>();
 
 		StuInfo jx = new StuInfo("Jiaxin Lee","28:e1:4c:7c:35:a7");
@@ -62,11 +65,23 @@ public class Main extends Activity {
 		stu.add(xy);
 		
 		init_stu(stu);
+
+		GridView gv = (GridView)this.findViewById(R.id.StuList);
+		
+		sca = new SimpleAdapter(
+				this,
+				getListForSimpleAdapter(stu),
+				R.layout.item,
+				new String[]{"col1", "col2", "col3"},
+				new int[]{R.id.photo, R.id.namae, R.id.taimu}
+				);
+		gv.setAdapter(sca);
+		
+		textView1 = (TextView) findViewById(R.id.textView1);
+		wifiApManager = new WifiApManager(this);
 		
 		scan();
 		
-		mTimer = new Timer();
-
 		mTimer = new Timer();
 
 		mHandler = new Handler(){
@@ -75,6 +90,7 @@ public class Main extends Activity {
 			switch (msg.what){
 				case 0:
 					textView1.setText("");
+					sca.notifyDataSetChanged();
 					scan();
 				break;
 				}
@@ -89,6 +105,20 @@ public class Main extends Activity {
 		};
 		
 		mTimer.schedule(mTimerTask, 10000, 1000);
+	}
+	
+	private List<Map<String, Object>> getListForSimpleAdapter(List<StuInfo> stu){
+		ArrayList<Map<String, Object>> stuList = new ArrayList<Map<String, Object>>();
+		int i = 0;
+		for (StuInfo ss : stu){
+			HashMap<String, Object> hmap = new HashMap<String, Object>();
+			hmap.put("col1", photoId[i]);
+			hmap.put("col2", ss.sName);
+			hmap.put("col3", "null\nnull");
+			i++;
+			stuList.add(hmap);
+		}
+		return stuList;
 	}
 	
 	public void init_stu(List<StuInfo> stu){
@@ -114,7 +144,6 @@ public class Main extends Activity {
 			  }
 			  outputStream.close();
 			} catch (Exception e) {
-			  textView1.append("haha\n");
 			  e.printStackTrace();
 			}
 	}
