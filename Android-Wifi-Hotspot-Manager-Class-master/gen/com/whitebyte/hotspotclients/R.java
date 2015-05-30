@@ -26,13 +26,11 @@ public final class R {
         public static final int xy=0x7f020003;
     }
     public static final class id {
-        public static final int SCROLLER_ID=0x7f070006;
         public static final int StuList=0x7f070005;
         public static final int item=0x7f070000;
         public static final int namae=0x7f070002;
         public static final int photo=0x7f070001;
         public static final int taimu=0x7f070003;
-        public static final int textView1=0x7f070007;
         public static final int top_navigation_layout_wt_main=0x7f070004;
     }
     public static final class layout {

@@ -111,7 +111,7 @@ public class WifiApManager {
      * @return ArrayList of {@link ClientScanResult}
      */
     public ArrayList<ClientScanResult> getClientList(boolean onlyReachables) {
-    	return getClientList(onlyReachables, 1000);
+    	return getClientList(onlyReachables, 500);
     }
     
 	/**
