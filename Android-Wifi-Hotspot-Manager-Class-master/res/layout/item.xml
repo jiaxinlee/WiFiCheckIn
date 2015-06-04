@@ -14,7 +14,7 @@
         android:id="@+id/namae"
         android:layout_width="70dip"
         android:layout_height="wrap_content"
-        android:paddingLeft="5dip"></TextView>"
+        android:paddingLeft="5dip"></TextView>
     <TextView
         android:id="@+id/taimu"
         android:layout_width="fill_parent"

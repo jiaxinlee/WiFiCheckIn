@@ -2,4 +2,7 @@
 <resources>
     <string name="hello">Hello World, Main!</string>
     <string name="app_name">Get Wifi Hotspot Clients</string>
+    <string name="button_origin">上次签到</string>
+    <string name="button_new">新的签到</string>
+    <string name="title_name">点名系统</string>
 </resources>
