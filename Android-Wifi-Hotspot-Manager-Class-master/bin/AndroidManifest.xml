@@ -16,6 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name="com.whitebyte.hotspotcontrolexample.Start_a_new_checkin"></activity>
+        <activity android:name="com.whitebyte.hotspotcontrolexample.View_old_checkin"></activity>
+        
     </application>
 </manifest>

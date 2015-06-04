@@ -31,7 +31,7 @@ import com.whitebyte.hotspotclients.R;
 import com.whitebyte.wifihotspotutils.ClientScanResult;
 import com.whitebyte.wifihotspotutils.WifiApManager;
 
-public class view_old_checkin extends Activity {
+public class View_old_checkin extends Activity {
 	WifiApManager wifiApManager;
 	
 	private SimpleAdapter sca;
@@ -57,17 +57,10 @@ public class view_old_checkin extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.old_main);
-				
-		List<StuInfo> stu = new ArrayList<StuInfo>();
 
-		StuInfo jx = new StuInfo("Jiaxin Lee","28:e1:4c:7c:35:a7","null","null");
-		stu.add(jx);
-		StuInfo xy = new StuInfo("Xiaoyang Wang", "68:96:7b:ed:a2:20","null","null");
-		stu.add(xy);
-		
-		init_stu(stu);
+		init_stu();
 
-		GridView gv = (GridView)this.findViewById(R.id.StuList);
+		GridView gv = (GridView)this.findViewById(R.id.OldStuList);
 		
 		sca = new SimpleAdapter(
 				this,
@@ -77,7 +70,7 @@ public class view_old_checkin extends Activity {
 				new int[]{R.id.photo, R.id.namae, R.id.taimu}
 				);
 		gv.setAdapter(sca);
-		
+
 	}
 
 	private void getListForSimpleAdapter(List<StuInfo> stu){
@@ -93,7 +86,8 @@ public class view_old_checkin extends Activity {
 		}
 	}
 	
-	public void init_stu(List<StuInfo> stu){
+	public void init_stu(){
+		List<StuInfo> stu = new ArrayList<StuInfo>();
 		String fileName = "myfile.txt";
 		String fileTime = "myTime.txt";
 		String usrHWAddr;

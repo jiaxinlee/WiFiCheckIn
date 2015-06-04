@@ -31,7 +31,7 @@ import com.whitebyte.hotspotclients.R;
 import com.whitebyte.wifihotspotutils.ClientScanResult;
 import com.whitebyte.wifihotspotutils.WifiApManager;
 
-public class start_a_new_checkin extends Activity {
+public class Start_a_new_checkin extends Activity {
 	WifiApManager wifiApManager;
 	
 	private Timer mTimer;
@@ -60,7 +60,6 @@ public class start_a_new_checkin extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-				
 		List<StuInfo> stu = new ArrayList<StuInfo>();
 
 		StuInfo jx = new StuInfo("Jiaxin Lee","28:e1:4c:7c:35:a7","null","null");
